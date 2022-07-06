@@ -2,24 +2,6 @@ package com.gildedrose;
 
 import java.util.Arrays;
 
-enum SpecialProduct {
-    AGED_BRIE("Aged Brie"),
-    SULFURAS("Sulfuras, Hand of Ragnaros"),
-    BACKSTAGE_PASSES("Backstage passes to a TAFKAL80ETC concert"),
-    CONJURED("Conjured Mana Cake");
-
-    private String name;
-
-    SpecialProduct(String name) {
-        this.name = name;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
-}
-
 public class GildedRose {
     private static final int MAX_QUALITY = 50;
     private static final int MIN_QUALITY = 0;
@@ -27,7 +9,7 @@ public class GildedRose {
     private static final int AFTER_SELL_IN_QUALITY_CHANGE = 2;
     private static final int CONJURED_MULTIPLE = 2;
     private static final int SELL_IN_10 = 10;
-    private static final int SELL_IN_5 = 10;
+    private static final int SELL_IN_5 = 5;
     private static final int SELL_IN_D_DAY = 0;
 
 
@@ -39,27 +21,29 @@ public class GildedRose {
 
     public void updateQuality() {
         Arrays.stream(items).forEach(item -> {
-            if (!item.name.equals(SpecialProduct.SULFURAS.getName())){
+            if (!item.name.equals(Product.SULFURAS.getName())){
                 updateQualityForProduct(item);
             }
         });
     }
 
     private void updateQualityForProduct(Item item) {
-        if (item.name.equals(SpecialProduct.AGED_BRIE.getName())){
-            updateQualityForAGED_BRIE(item);
-        }
-        else if (item.name.equals(SpecialProduct.BACKSTAGE_PASSES.getName())) {
-            updateQualityForBACKSTAGE_PASSES(item);
-        }
-        else if (item.name.equals(SpecialProduct.SULFURAS.getName())){
-            return;
-        }
-        else if (item.name.equals(SpecialProduct.CONJURED.getName())){
-            updateQualityForCONJUREDProduct(item);
-        }
-        else {
-            updateQualityForNormalProduct(item);
+        Product itemName = Product.getValue(item.name);
+        switch (itemName){
+            case AGED_BRIE:
+                updateQualityForAGED_BRIE(item);
+                break;
+            case BACKSTAGE_PASSES:
+                updateQualityForBACKSTAGE_PASSES(item);
+                break;
+            case SULFURAS:
+                break;
+            case CONJURED:
+                updateQualityForCONJUREDProduct(item);
+                break;
+            case NORMAL:
+            default:
+                updateQualityForNormalProduct(item);
         }
 
         normalizeQuality(item);
