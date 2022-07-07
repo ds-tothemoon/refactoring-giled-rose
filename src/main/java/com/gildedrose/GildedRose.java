@@ -20,26 +20,24 @@ public class GildedRose {
     }
 
     public void updateQuality() {
-        Arrays.stream(items).forEach(item -> {
-            if (!item.name.equals(Product.SULFURAS.getName())){
-                updateQualityForProduct(item);
-            }
-        });
+        Arrays.stream(items)
+            .forEach(this::updateQualityForProduct);
     }
 
     private void updateQualityForProduct(Item item) {
-        Product itemName = Product.getValue(item.name);
-        switch (itemName){
+        ProductType productType = ProductType.getValue(item.name);
+
+        switch (productType){
+            case SULFURAS:
+                return;
             case AGED_BRIE:
-                updateQualityForAGED_BRIE(item);
+                updateQualityForAgedBrie(item);
                 break;
             case BACKSTAGE_PASSES:
-                updateQualityForBACKSTAGE_PASSES(item);
-                break;
-            case SULFURAS:
+                updateQualityForBackstagePasses(item);
                 break;
             case CONJURED:
-                updateQualityForCONJUREDProduct(item);
+                updateQualityForConjuredProduct(item);
                 break;
             case NORMAL:
             default:
@@ -50,7 +48,7 @@ public class GildedRose {
         item.sellIn--;
     }
 
-    private void updateQualityForAGED_BRIE(Item item) {
+    private void updateQualityForAgedBrie(Item item) {
         if (item.sellIn > SELL_IN_D_DAY){
             item.quality += NORMAL_QUALITY_CHANGE;
         }
@@ -59,7 +57,7 @@ public class GildedRose {
         }
     }
 
-    private void updateQualityForBACKSTAGE_PASSES(Item item) {
+    private void updateQualityForBackstagePasses(Item item) {
         if (item.sellIn > SELL_IN_10){
             item.quality += 1;
         }
@@ -74,21 +72,21 @@ public class GildedRose {
         }
     }
 
+    private void updateQualityForConjuredProduct(Item item) {
+        if (item.sellIn > SELL_IN_D_DAY) {
+            item.quality -= NORMAL_QUALITY_CHANGE * CONJURED_MULTIPLE;
+        }
+        else {
+            item.quality -= AFTER_SELL_IN_QUALITY_CHANGE * CONJURED_MULTIPLE;
+        }
+    }
+
     private void updateQualityForNormalProduct(Item item) {
         if (item.sellIn > SELL_IN_D_DAY) {
             item.quality -= NORMAL_QUALITY_CHANGE;
         }
         else {
             item.quality -= AFTER_SELL_IN_QUALITY_CHANGE;
-        }
-    }
-
-    private void updateQualityForCONJUREDProduct(Item item) {
-        if (item.sellIn > SELL_IN_D_DAY) {
-            item.quality -= NORMAL_QUALITY_CHANGE * CONJURED_MULTIPLE;
-        }
-        else {
-            item.quality -= AFTER_SELL_IN_QUALITY_CHANGE * CONJURED_MULTIPLE;
         }
     }
 
